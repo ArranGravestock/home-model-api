@@ -5,26 +5,20 @@ var crypto = require('crypto');
 var database = require('./database');
 var connection = database.Connect();
 
-let user = {
-    "username": "",
-    "password": "",
-    "email": ""
-}
-
 module.exports = {
     //hashedPass = hashPass("test"); //causes error undefined ???
         //console.log(hashedPass); //undefined??????
-    createUser: (data) => {
+    create: (data) => {
         return new Promise((resolve, reject) => {
             if(data.username && data.password && data.email) {
                 connection.query(`INSERT INTO Users (UserName, Password, Email)
                 VALUES (?, ?, ?)`, [data.username, data.password, data.email],
                 function(err, results) {
                     if (err) {
+                        console.log(err);
                         reject(err);
                     } else {
-                        console.log(results);
-                        resolve(true);
+                        resolve(results.insertId);
                     }
                 })
             } else {
@@ -35,7 +29,7 @@ module.exports = {
 
     validateLogin: (data) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT Users.UserName FROM Users
+            connection.query(`SELECT Users.UserName, Users.UserID FROM Users
             WHERE Users.UserName = ? AND Users.Password = ?`, [data.username, data.password],
             function(err, results) {
                 if (err) {
@@ -44,7 +38,7 @@ module.exports = {
                     if (!results.length) {
                         reject(false);
                     } else {
-                        resolve(true);
+                        resolve(results);
                     }
                 }
             })

@@ -27,5 +27,23 @@ module.exports = {
                 }
             })
         })
+    },
+    returnAll: (req) => {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                `SELECT Lights.LightID, Lights.LightName, Lights.LightState
+                FROM Devices
+                RIGHT JOIN Rooms on Devices.DeviceID = Rooms.DeviceID
+                RIGHT JOIN Lights on Rooms.RoomID = Lights.RoomID
+                WHERE Devices.DeviceID = ?`, [req.deviceid],
+                function(err, results) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            )
+        })
     }
 }

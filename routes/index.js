@@ -15,13 +15,38 @@ router.post('/login', function(req, res) {
     dataController.validateLogin(req, res);
 })
 
+router.post('/logout', function(req, res) {
+    req.session.destroy(function (err) {
+        if (err) {
+            console.log(err);
+        }
+    })
+})
+
 //retrieve
-router.get('/devices', function(req, res) {
+function authoriseUser(req, res, next){
+    console.log(`Query attempt by session... ${req.session.user}:${req.session.userid}`)
+    if(req.session.user && req.session.userid){
+        console.log("reached");
+        next();
+    } else {
+       var err = new Error("Not logged in!");
+       next(err);
+    }
+ }
+
+ router.get('/devices', authoriseUser, function(req, res) {
+    //console.log(req.session);
+    console.log("reached 31");
    dataController.DeviceNames(req, res);
 })
 
 router.get('/device/:deviceid/rooms', function(req, res) {
     dataController.DeviceRooms(req, res);
+})
+
+router.get('/device/:deviceid/lights', authoriseUser, function(req, res) {
+    dataController.DeviceLights(req, res);
 })
 
 router.get('/device/:deviceid/room/:roomid/lights', function(req, res) {

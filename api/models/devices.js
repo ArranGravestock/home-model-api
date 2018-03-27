@@ -4,11 +4,14 @@ var database = require('./database');
 var connection = database.Connect();
 
 module.exports = {
-    getDevices: () => {
+    getDevices: (session) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT Devices.DeviceName FROM Devices`, 
+            connection.query(`SELECT Devices.DeviceID, Devices.DeviceName FROM Devices
+            RIGHT JOIN UserDevices ON Devices.deviceID = UserDevices.DeviceID
+            WHERE UserDevices.UserID = ?`, [session.userid], 
             function(err, results) {
                 if (err) {
+                    console.log(err);
                     reject(err);
                 } else {
                     if (!results.length) {
@@ -29,6 +32,7 @@ module.exports = {
             WHERE Devices.DeviceID = ?`, [req.deviceid], 
             function(err, results) {
                 if (err) {
+                    console.log(err);
                     reject(err)
                 } else {
                     if(!results.length) {

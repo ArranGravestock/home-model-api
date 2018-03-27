@@ -6,40 +6,55 @@ let roomModel = require('../models/rooms');
 let sensorModel = require('../models/sensors');
 let userModel = require('../models/users');
 
-var crypto = require('crypto');
-
 module.exports = {
     newUser: (req, res) => {
-        userModel.createUser(req.query).then(
-            function() {
-                res.status(201);
-                res.send("success");
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
+        if (!req.body.username || !req.body.password || !req.body.email) {
+            res.status("400");
+            res.send("no details provided");
+        } else {
+            userModel.create(req.body).then(
+                function(result) {
+                    req.session.user = req.body.user;
+                    req.session.userid = result;
+                    res.status(201);
+                    res.send("success");
+                }
+            ).catch(
+                function() {
+                    res.status(400);
+                    res.send("failure");
+                }
+            )
+        }
     },
     validateLogin: (req, res) => {
-        userModel.validateLogin(req.query).then(
-            function() {
-                res.status(201);
-                res.send("success");
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
+        if(!req.body.username || !req.body.password) {
+            res.status("400");
+            res.send("no details provided");
+        } else {
+            userModel.validateLogin(req.body).then(
+                function(result) {
+                    req.session.user = req.body.username;
+                    req.session.userid = result[0].UserID;
+
+                    res.status(201);
+                    res.send("success");
+                }
+            ).catch(
+                function() {
+                    res.status(400);
+                    res.send("failure");
+                }
+            )
+        }
     },
     DeviceNames: (req, res) => {
-        deviceModel.getDevices().then(
-            function() {
+        console.log("reached 47");
+        deviceModel.getDevices(req.session).then((results) => 
+            {
                 res.status(201);
-                res.send("success");
+                console.log(results);
+                res.send(results);
             }
         ).catch(
             function() {
@@ -118,4 +133,17 @@ module.exports = {
             }
         )
     },
+    DeviceLights: (req, res) => {
+        lightModel.returnAll(req.params).then(
+            function(results) {
+                res.status(200);
+                res.send(results);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    }
 }
