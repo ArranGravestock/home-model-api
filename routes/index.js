@@ -13,6 +13,7 @@ router.post('/signup', function(req, res) {
 
 router.post('/login', function(req, res) {
     dataController.validateLogin(req, res);
+    console.log(req.socket);
 })
 
 router.post('/logout', function(req, res) {
@@ -23,21 +24,13 @@ router.post('/logout', function(req, res) {
     })
 })
 
-//retrieve
-function authoriseUser(req, res, next){
-    console.log(`Query attempt by session... ${req.session.user}:${req.session.userid}`)
-    if(req.session.user && req.session.userid){
-        console.log("reached");
-        next();
-    } else {
-       var err = new Error("Not logged in!");
-       next(err);
-    }
- }
+router.post('/registerdevice/:token', authoriseUser, function(req, res) {
+    dataController.RegisterDevice(req, res);
+})
 
+
+//retrieve
  router.get('/devices', authoriseUser, function(req, res) {
-    //console.log(req.session);
-    console.log("reached 31");
    dataController.DeviceNames(req, res);
 })
 
@@ -65,26 +58,15 @@ router.get('/device/:deviceid/room/:roomid/light/:lightid', function(req, res) {
     dataController.LightState(req, res);
 })
 
-
-/*
-var fs = require("fs");``
-app.get('/test', function(req, res) {
-    fs.readFile(__dirname + "/" + "server_test.json", 'utf8', function(err, data) {
-        var test = JSON.parse(data);
-        console.log(test);
-        res.end(data);
-    })
-})
-
-app.get('/:device/:roomid', function(req, res) {
-    fs.readFile(__dirname + "/" + "server_test.json", 'utf8', function(err, data) {
-        var device = JSON.parse(data);
-        var rooms = device[req.params.device]
-        var room_items = rooms[req.params.roomid]
-        console.log(room_items);
-        res.end(JSON.stringify(room_items));
-    })
-})
-*/
+function authoriseUser(req, res, next){
+    console.log(`Query attempt by session... ${req.session.user}:${req.session.userid}`)
+    if(req.session.user && req.session.userid){
+        console.log("reached");
+        next();
+    } else {
+       var err = new Error("Not logged in!");
+       next(err);
+    }
+ }
 
 module.exports = router;

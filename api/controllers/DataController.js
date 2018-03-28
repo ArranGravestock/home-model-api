@@ -145,5 +145,18 @@ module.exports = {
                 res.send("failure");
             }
         )
+    },
+    RegisterDevice: (req, res) => {
+        userModel.RegisterDevice(req).then(
+            function() {
+                res.status(200);
+                res.send("success");
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
     }
 }

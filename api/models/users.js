@@ -43,6 +43,22 @@ module.exports = {
                 }
             })
         })
+    },
+    RegisterDevice: (req) => {
+        console.log(req.session.userid)
+        return new Promise((resolve, reject) => {
+            connection.query(`INSERT INTO UserDevices (UserID, DeviceID)
+            VALUES (?, ?)`, [req.session.userid, req.params.token],
+                function(err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            )
+        })
     }
 }
 
