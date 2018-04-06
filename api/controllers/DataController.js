@@ -38,7 +38,7 @@ module.exports = {
                     req.session.userid = result[0].UserID;
 
                     res.status(201);
-                    res.send("success");
+                    res.send({result: 'OK', message: 'Session updated'});
                 }
             ).catch(
                 function() {
@@ -108,9 +108,10 @@ module.exports = {
     
     SensorState: (req, res) => {
         sensorModel.SensorState(req.params).then(
-            function() {
+            function(results) {
                 res.status(201);
-                res.send("success");
+                console.log(results)
+                res.send(results);
             }
         ).catch(
             function() {
@@ -158,5 +159,38 @@ module.exports = {
                 res.send("failure");
             }
         )
+    },
+    UpdateSensor: (req, res) => {
+        sensorModel.Update(req.params).then( 
+            function() {
+                res.status(200);
+                res.send("success");
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send(failure);
+            }
+        )
+    },
+    Reading: (req, res) => {
+        console.log(req.body);
+        if (req.body) {
+            //console.log(req.body.DEVICE_ID)
+            //console.log(req.body.DEVICE_ID[0])
+            //console.log(req.body.DEVICE_ID[0].SENSORS)
+            //console.log(req.body.DEVICE_ID[1].LIGHTS)
+            for (var i = 0; i < req.body.DEVICE_ID[0].SENSORS.length; i++) {
+                console.log(req.body.DEVICE_ID[0].SENSORS[i])
+            }
+            for (var i = 0; i < req.body.DEVICE_ID[1].LIGHTS.length; i++) {
+                console.log(req.body.DEVICE_ID[1].LIGHTS[i])
+            }
+            res.status(200);
+            res.send("success");
+        } else {
+            res.status(400);
+            res.send("test");
+        }
     }
 }

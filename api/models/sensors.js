@@ -19,13 +19,33 @@ module.exports = {
                     reject(err)
                 } else {
                     if(!results.length) {
-                        reject(false);
+                        reject("no results found");
                     } else {
-                        console.log(results);
+                        //console.log(results);
                         resolve(results);
                     }
                 }
             })
+        })
+    },
+    Update: (req) => {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                `UPDATE Sensors
+                INNER JOIN Rooms ON Sensors.RoomID = Rooms.RoomID
+                INNER JOIN Devices ON Devices.DeviceID = Rooms.DeviceID
+                SET Sensors.SensorState = ?
+                WHERE Devices.DeviceID = ? AND Rooms.RoomID = '1' AND Sensors.SensorID = ?
+                `, [req.sensorstate, req.deviceid, req.sensorid],
+                function (err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        resolve("success");
+                    }
+                }
+            )
         })
     }
 }

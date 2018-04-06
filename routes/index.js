@@ -13,7 +13,7 @@ router.post('/signup', function(req, res) {
 
 router.post('/login', function(req, res) {
     dataController.validateLogin(req, res);
-    console.log(req.socket);
+    //console.log(req.socket);
 })
 
 router.post('/logout', function(req, res) {
@@ -28,6 +28,14 @@ router.post('/registerdevice/:token', authoriseUser, function(req, res) {
     dataController.RegisterDevice(req, res);
 })
 
+//update
+router.put('/device/:deviceid/sensor/:sensorid/:sensorstate', function(req, res) {
+    dataController.UpdateSensor(req, res);
+})
+
+router.put('/reading', function(req, res) {
+    dataController.Reading(req, res);
+})
 
 //retrieve
  router.get('/devices', authoriseUser, function(req, res) {
