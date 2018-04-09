@@ -10,7 +10,6 @@ var database = require('../api/models/database');
 function authoriseUser(req, res, next){
     console.log(`Query attempt by session... ${req.session.user}:${req.session.userid}`)
     if(req.session.user && req.session.userid){
-        console.log("reached");
         next();
     } else {
        var err = new Error("Not logged in!");
@@ -53,6 +52,14 @@ router.put('/reading', function(req, res) {
 
 router.get('/device/:deviceid/lights', authoriseUser, function(req, res) {
     dataController.lights(req, res);
+})
+
+router.get('/device/:deviceid/remotes', authoriseUser, function(req, res) {
+    dataController.getRemotes(req, res);
+})
+
+router.get('/device/:deviceid/sensors', authoriseUser, function(req, res) {
+    dataController.getSensors(req, res);
 })
 
 router.get('/device/:deviceid/sensor/:sensorid', authoriseUser, function(req, res) {

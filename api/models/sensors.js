@@ -18,17 +18,37 @@ module.exports = {
             )`, [deviceid, thingid],
             function(err, results) {
                 if (err) {
-                    console.log(err);
                     reject(err)
                 } else {
                     if(!results.length) {
                         reject("no results found");
                     } else {
-                        //console.log(results);
                         resolve(results);
                     }
                 }
             })
         })
     },
+    returnAll: (deviceid) => {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                `SELECT Things.ThingID, Things.ThingName, ThingState FROM Logs 
+                INNER JOIN Things ON Things.DeviceID = Logs.DeviceID AND Things.ThingID = Logs.ThingID
+                WHERE Logs.DeviceID = ?
+                AND Things.ThingType = 'sensor'
+                AND CreatedAt = (
+                    SELECT MAX(CreatedAt) 
+                    FROM Logs
+                )`, [deviceid],
+                function(err, results) {
+                    if (err) {
+                        console.log(err)
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            )
+        })
+    }
 }

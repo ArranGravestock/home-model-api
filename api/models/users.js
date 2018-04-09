@@ -46,7 +46,6 @@ module.exports = {
     },
     
     registerDevice: (req) => {
-        console.log(req.session.userid)
         return new Promise((resolve, reject) => {
             connection.query(`INSERT INTO UserDevices (UserID, DeviceID)
             VALUES (?, ?)`, [req.session.userid, req.params.token],

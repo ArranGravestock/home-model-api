@@ -2,10 +2,10 @@
 
 let deviceModel = require('../models/devices');
 let lightModel = require('../models/lights');
-let roomModel = require('../models/rooms');
 let sensorModel = require('../models/sensors');
 let userModel = require('../models/users');
 let logsModel = require('../models/logs');
+let remoteModel = require('../models/remotes');
 
 module.exports = {
     newUser: (req, res) => {
@@ -55,7 +55,6 @@ module.exports = {
         deviceModel.getNames(req.session).then((results) => 
             {
                 res.status(201);
-                console.log(results);
                 res.send(results);
             }
         ).catch(
@@ -115,7 +114,6 @@ module.exports = {
     },
     
     lights: (req, res) => {
-        console.log(req.deviceid);
         lightModel.returnAll(req.params.deviceid).then(
             function(results) {
                 res.status(200);
@@ -130,7 +128,6 @@ module.exports = {
     },
 
     getSensor: (req, res) => {
-        console.log(req.params.deviceid);
         sensorModel.getState(req.params.deviceid, req.params.sensorid).then(
             function(results) {
                 res.status(200);
@@ -146,6 +143,34 @@ module.exports = {
 
     getTop: (req, res) => {
         logsModel.getTop(req.params.deviceid, req.params.limit).then(
+            function(results) {
+                res.status(200);
+                res.send(results);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    getRemotes: (req, res) => {
+        remoteModel.returnAll(req.params.deviceid).then(
+            function(results) {
+                res.status(200);
+                res.send(results);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    getSensors: (req, res) => {
+        sensorModel.returnAll(req.params.deviceid).then(
             function(results) {
                 res.status(200);
                 res.send(results);
