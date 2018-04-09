@@ -59,6 +59,11 @@ router.get('/device/:deviceid/sensor/:sensorid', authoriseUser, function(req, re
     dataController.getSensor(req, res);
 })
 
+router.get('/device/:deviceid/top/:limit', authoriseUser, function(req, res) {
+    dataController.getTop(req, res);
+})
+
+
 
 
 

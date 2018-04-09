@@ -144,9 +144,18 @@ module.exports = {
         )
     },
 
-
-
-
-
+    getTop: (req, res) => {
+        logsModel.getTop(req.params.deviceid, req.params.limit).then(
+            function(results) {
+                res.status(200);
+                res.send(results);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
 
 }

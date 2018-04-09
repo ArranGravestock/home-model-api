@@ -65,5 +65,22 @@ module.exports = {
                 }
             }) 
         })
+    },
+    getTop: (deviceid, limit) => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT Logs.LogID, Logs.CreatedAt, Logs.ThingState, Things.ThingName, Things.ThingType FROM Logs
+            INNER JOIN Things on Things.DeviceID = Logs.DeviceID AND Things.ThingID = Logs.ThingID
+            WHERE Logs.DeviceID = ?
+            ORDER BY CreatedAt DESC
+            LIMIT ${limit}`, [deviceid], 
+            function(err, results) {
+                if (err) {
+                    console.log(err);
+                    reject(err)
+                } else {
+                    resolve(results);
+                }
+            }) 
+        })
     }
 }
