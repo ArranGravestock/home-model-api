@@ -6,6 +6,18 @@ var router = express.Router();
 var dataController = require('../api/controllers/DataController');
 var database = require('../api/models/database');
 
+//functions middleware
+function authoriseUser(req, res, next){
+    console.log(`Query attempt by session... ${req.session.user}:${req.session.userid}`)
+    if(req.session.user && req.session.userid){
+        console.log("reached");
+        next();
+    } else {
+       var err = new Error("Not logged in!");
+       next(err);
+    }
+ }
+
 //create
 router.post('/signup', function(req, res) {
     dataController.newUser(req, res);
@@ -13,7 +25,6 @@ router.post('/signup', function(req, res) {
 
 router.post('/login', function(req, res) {
     dataController.validateLogin(req, res);
-    //console.log(req.socket);
 })
 
 router.post('/logout', function(req, res) {
@@ -25,56 +36,32 @@ router.post('/logout', function(req, res) {
 })
 
 router.post('/registerdevice/:token', authoriseUser, function(req, res) {
-    dataController.RegisterDevice(req, res);
+    dataController.registerDevice(req, res);
 })
 
-//update
-router.put('/device/:deviceid/sensor/:sensorid/:sensorstate', function(req, res) {
-    dataController.UpdateSensor(req, res);
-})
 
+//server reading - adds all data to logs
 router.put('/reading', function(req, res) {
-    dataController.Reading(req, res);
+    dataController.reading(req, res);
 })
+
 
 //retrieve
  router.get('/devices', authoriseUser, function(req, res) {
-   dataController.DeviceNames(req, res);
-})
-
-router.get('/device/:deviceid/rooms', function(req, res) {
-    dataController.DeviceRooms(req, res);
+   dataController.deviceNames(req, res);
 })
 
 router.get('/device/:deviceid/lights', authoriseUser, function(req, res) {
-    dataController.DeviceLights(req, res);
+    dataController.lights(req, res);
 })
 
-router.get('/device/:deviceid/room/:roomid/lights', function(req, res) {
-    dataController.RoomLights(req, res);
+router.get('/device/:deviceid/sensor/:sensorid', authoriseUser, function(req, res) {
+    dataController.getSensor(req, res);
 })
 
-router.get('/device/:deviceid/room/:roomid/sensors', function(req, res) {
-    dataController.RoomSensors(req, res);
-})
 
-router.get('/device/:deviceid/room/:roomid/sensor/:sensorid', function(req, res) {
-    dataController.SensorState(req, res);
-})
 
-router.get('/device/:deviceid/room/:roomid/light/:lightid', function(req, res) {
-    dataController.LightState(req, res);
-})
 
-function authoriseUser(req, res, next){
-    console.log(`Query attempt by session... ${req.session.user}:${req.session.userid}`)
-    if(req.session.user && req.session.userid){
-        console.log("reached");
-        next();
-    } else {
-       var err = new Error("Not logged in!");
-       next(err);
-    }
- }
+
 
 module.exports = router;

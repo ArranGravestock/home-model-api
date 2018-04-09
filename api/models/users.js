@@ -44,7 +44,8 @@ module.exports = {
             })
         })
     },
-    RegisterDevice: (req) => {
+    
+    registerDevice: (req) => {
         console.log(req.session.userid)
         return new Promise((resolve, reject) => {
             connection.query(`INSERT INTO UserDevices (UserID, DeviceID)

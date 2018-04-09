@@ -5,6 +5,7 @@ let lightModel = require('../models/lights');
 let roomModel = require('../models/rooms');
 let sensorModel = require('../models/sensors');
 let userModel = require('../models/users');
+let logsModel = require('../models/logs');
 
 module.exports = {
     newUser: (req, res) => {
@@ -27,6 +28,7 @@ module.exports = {
             )
         }
     },
+
     validateLogin: (req, res) => {
         if(!req.body.username || !req.body.password) {
             res.status("400");
@@ -48,9 +50,9 @@ module.exports = {
             )
         }
     },
-    DeviceNames: (req, res) => {
-        console.log("reached 47");
-        deviceModel.getDevices(req.session).then((results) => 
+
+    deviceNames: (req, res) => {
+        deviceModel.getNames(req.session).then((results) => 
             {
                 res.status(201);
                 console.log(results);
@@ -64,91 +66,8 @@ module.exports = {
         )
     },
     
-    DeviceRooms: (req, res) => {
-        deviceModel.getDeviceRooms(req.params).then(
-            function() {
-                res.status(204);
-                res.send("success");
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
-    },
-    
-    RoomLights: (req, res) => {
-        roomModel.RoomLights(req.params).then(
-            function() {
-                res.status(201);
-                res.send("success");
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
-    },
-    
-    RoomSensors: (req, res) => {
-        roomModel.RoomSensors(req.params).then(
-            function() {
-                res.status(201);
-                res.send("success");
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
-    },
-    
-    SensorState: (req, res) => {
-        sensorModel.SensorState(req.params).then(
-            function(results) {
-                res.status(201);
-                console.log(results)
-                res.send(results);
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
-    },
-    
-    LightState: (req, res) => {
-        lightModel.LightState(req.params).then(
-            function() {
-                res.status(201);
-                res.send("success");
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
-    },
-    DeviceLights: (req, res) => {
-        lightModel.returnAll(req.params).then(
-            function(results) {
-                res.status(200);
-                res.send(results);
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
-    },
-    RegisterDevice: (req, res) => {
-        userModel.RegisterDevice(req).then(
+    registerDevice: (req, res) => {
+        userModel.registerDevice(req).then(
             function() {
                 res.status(200);
                 res.send("success");
@@ -160,37 +79,74 @@ module.exports = {
             }
         )
     },
-    UpdateSensor: (req, res) => {
-        sensorModel.Update(req.params).then( 
-            function() {
-                res.status(200);
-                res.send("success");
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send(failure);
-            }
-        )
-    },
-    Reading: (req, res) => {
-        console.log(req.body);
+
+    reading: (req, res) => {
+
+        //compile values to be added to database in format (deviceid, thingid, thingstate)
+        var values = "";
         if (req.body) {
-            //console.log(req.body.DEVICE_ID)
-            //console.log(req.body.DEVICE_ID[0])
-            //console.log(req.body.DEVICE_ID[0].SENSORS)
-            //console.log(req.body.DEVICE_ID[1].LIGHTS)
-            for (var i = 0; i < req.body.DEVICE_ID[0].SENSORS.length; i++) {
-                console.log(req.body.DEVICE_ID[0].SENSORS[i])
+
+            //generate value string to reduce number of queries
+            for (var i = 0; i < req.body.THINGS.length; i++) {
+                if (i != req.body.THINGS.length-1) {
+                    values += `(${req.body.DEVICE_ID}, ${req.body.THINGS[i].id}, ${req.body.THINGS[i].state}),`
+                } else {
+                    values += `(${req.body.DEVICE_ID}, ${req.body.THINGS[i].id}, ${req.body.THINGS[i].state})`
+                }
             }
-            for (var i = 0; i < req.body.DEVICE_ID[1].LIGHTS.length; i++) {
-                console.log(req.body.DEVICE_ID[1].LIGHTS[i])
-            }
-            res.status(200);
-            res.send("success");
+
+            //query the database with the values
+            logsModel.add(values).then( 
+                function() {
+                    res.status(200);
+                    res.send("success");
+                }
+            ).catch(
+                function() {
+                    res.status(400);
+                    res.send(failure);
+                }
+            )
+            
         } else {
             res.status(400);
             res.send("test");
         }
-    }
+    },
+    
+    lights: (req, res) => {
+        console.log(req.deviceid);
+        lightModel.returnAll(req.params.deviceid).then(
+            function(results) {
+                res.status(200);
+                res.send(results);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    getSensor: (req, res) => {
+        console.log(req.params.deviceid);
+        sensorModel.getState(req.params.deviceid, req.params.sensorid).then(
+            function(results) {
+                res.status(200);
+                res.send(results);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+
+
+
+
+
 }
