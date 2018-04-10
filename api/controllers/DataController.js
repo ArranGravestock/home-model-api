@@ -183,4 +183,19 @@ module.exports = {
         )
     },
 
+    setLight: (req, res) => {
+        var value = `(${req.params.deviceid}, ${req.params.lightid}, ${req.params.lightstate})`
+        console.log(value)
+        logsModel.add(value).then(
+            function() {
+                res.status(200);
+                res.send("success");
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
 }

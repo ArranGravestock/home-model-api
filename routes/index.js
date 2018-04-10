@@ -66,6 +66,10 @@ router.get('/device/:deviceid/sensor/:sensorid', authoriseUser, function(req, re
     dataController.getSensor(req, res);
 })
 
+router.post('/device/:deviceid/light/:lightid/state/:lightstate', authoriseUser, function(req, res) {
+    dataController.setLight(req, res);
+})
+
 router.get('/device/:deviceid/top/:limit', authoriseUser, function(req, res) {
     dataController.getTop(req, res);
 })

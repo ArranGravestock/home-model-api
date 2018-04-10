@@ -10,14 +10,12 @@ module.exports = {
     returnAll: (deviceid) => {
         return new Promise((resolve, reject) => {
             connection.query(
-                `SELECT Things.ThingID, Things.ThingName, ThingState FROM Logs 
-                INNER JOIN Things ON Things.DeviceID = Logs.DeviceID AND Things.ThingID = Logs.ThingID
-                WHERE Logs.DeviceID = ?
-                AND Things.ThingType = 'remote'
-                AND CreatedAt = (
-                    SELECT MAX(CreatedAt) 
-                    FROM Logs
-                )`, [deviceid],
+                `SELECT Logs.DeviceID, Logs.ThingID, Logs.ThingState, Things.ThingName FROM Logs
+                JOIN (SELECT DeviceID, ThingID, MAX(CreatedAt) AS maxdate FROM Logs group by DeviceID, ThingID) y
+                ON y.maxdate = Logs.CreatedAt AND y.DeviceID = Logs.DeviceID AND y.ThingID = Logs.ThingID
+                INNER JOIN Things ON Logs.DeviceID = Things.DeviceID AND Logs.ThingID = Things.ThingID
+                WHERE Things.ThingType = 'remote'
+                AND Logs.DeviceID = ?`, [deviceid],
                 function(err, results) {
                     if (err) {
                         reject(err);
