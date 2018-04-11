@@ -1,0 +1,50 @@
+CREATE TABLE `Devices` (
+  `DeviceID` int(11) NOT NULL AUTO_INCREMENT,
+  `DeviceName` varchar(45) NOT NULL,
+  PRIMARY KEY (`DeviceID`),
+  UNIQUE KEY `DeviceName_UNIQUE` (`DeviceName`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `Users` (
+  `UserID` int(11) NOT NULL AUTO_INCREMENT,
+  `UserName` varchar(45) NOT NULL,
+  `Password` varchar(64) NOT NULL,
+  `Email` varchar(128) NOT NULL,
+  PRIMARY KEY (`UserID`),
+  UNIQUE KEY `UserName_UNIQUE` (`UserName`),
+  UNIQUE KEY `Email_UNIQUE` (`Email`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `UserDevices` (
+  `UserID` int(11) NOT NULL,
+  `DeviceID` int(11) NOT NULL,
+  PRIMARY KEY (`UserID`,`DeviceID`),
+  KEY `UserID_idx` (`UserID`),
+  KEY `Users_Device_idx` (`DeviceID`),
+  CONSTRAINT `Users_Device` FOREIGN KEY (`DeviceID`) REFERENCES `Devices` (`DeviceID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `Users_User` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `Logs` (
+  `LogID` int(11) NOT NULL AUTO_INCREMENT,
+  `CreatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `DeviceID` int(11) NOT NULL,
+  `ThingID` int(11) NOT NULL,
+  `ThingState` int(11) NOT NULL,
+  PRIMARY KEY (`LogID`),
+  KEY `LOGS_THINGS_ID_FK_idx` (`ThingID`),
+  KEY `LOGS_DEVICE_ID_FK_idx` (`DeviceID`),
+  CONSTRAINT `LOGS_DEVICE_ID_FK` FOREIGN KEY (`DeviceID`) REFERENCES `Things` (`DeviceID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `LOGS_THINGS_ID_FK` FOREIGN KEY (`ThingID`) REFERENCES `Things` (`ThingID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1862 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `Things` (
+  `ThingID` int(11) NOT NULL,
+  `DeviceID` int(11) NOT NULL,
+  `ThingName` varchar(45) NOT NULL,
+  `ThingType` varchar(45) NOT NULL,
+  PRIMARY KEY (`ThingID`,`DeviceID`),
+  KEY `COMPOSITE_THINGID` (`ThingID`),
+  KEY `COMPOSITE_DEVICEID` (`DeviceID`),
+  CONSTRAINT `THINGS_DEVICE_ID_FK` FOREIGN KEY (`DeviceID`) REFERENCES `Devices` (`DeviceID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
