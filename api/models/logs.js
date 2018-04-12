@@ -73,12 +73,58 @@ module.exports = {
             LIMIT ${limit}`, [deviceid], 
             function(err, results) {
                 if (err) {
-                    console.log(err);
                     reject(err)
                 } else {
                     resolve(results);
                 }
             }) 
         })
-    }
+    },
+    countDevices: (deviceid) => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT COUNT(DeviceID) as TotalCount FROM home_model.Logs
+            WHERE DeviceID = ?
+            `, [deviceid], 
+            function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results);
+                }
+            }) 
+        })
+    },
+    countThing: (deviceid, thingid) => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT COUNT(ThingID) FROM home_model.Logs
+            WHERE DeviceID = ?
+            AND ThingID = ?
+            `, [deviceid, thingid], 
+            function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results);
+                }
+            }) 
+        })
+    },
+    countAllThings: (deviceid) => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT Logs.ThingID, Things.ThingName, COUNT(Logs.ThingID) as TotalCount FROM Logs
+            INNER JOIN Things on Things.ThingID = Logs.ThingID
+            AND Things.DeviceID = Logs.DeviceID
+            WHERE Logs.ThingID IN (Logs.ThingID)
+            AND Logs.DeviceID = ?
+            GROUP BY Logs.DeviceID, Logs.ThingID
+            `, [deviceid], 
+            function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results);
+                }
+            }) 
+        })
+    },
 }

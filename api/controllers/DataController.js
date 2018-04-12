@@ -6,6 +6,7 @@ let sensorModel = require('../models/sensors');
 let userModel = require('../models/users');
 let logsModel = require('../models/logs');
 let remoteModel = require('../models/remotes');
+let thingsModel = require('../models/things');
 
 module.exports = {
     newUser: (req, res) => {
@@ -204,6 +205,62 @@ module.exports = {
             function() {
                 res.status(200);
                 res.send("success");
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    countDevice: (req, res) => {
+        logsModel.countDevices(req.params.deviceid).then(
+            function(results) {
+                res.status(200);
+                res.send(results);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    countThing: (req, res) => {
+        logsModel.countThing(req.params.deviceid, req.params.thingid).then(
+            function(results) {
+                res.status(200);
+                res.send(results);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    countAllThings: (req, res) => {
+        logsModel.countAllThings(req.params.deviceid).then(
+            function(results) {
+                res.status(200);
+                res.send(results);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    countByCategory: (req, res) => {
+        thingsModel.countByCategory(req.params.deviceid, req.params.category).then(
+            function(results) {
+                res.status(200);
+                res.send(results);
             }
         ).catch(
             function() {

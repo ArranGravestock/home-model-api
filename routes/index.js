@@ -78,8 +78,21 @@ router.get('/device/:deviceid/top/:limit', authoriseUser, function(req, res) {
     dataController.getTop(req, res);
 })
 
+router.get('/device/:deviceid/count', authoriseUser, function(req, res) {
+    dataController.countDevice(req, res);
+})
 
+router.get('/device/:deviceid/thing/:thingid/count', authoriseUser, function(req, res) {
+    dataController.countThing(req, res);
+})
 
+router.get('/device/:deviceid/countallthings', authoriseUser, function(req, res) {
+    dataController.countAllThings(req, res);
+})
+
+router.get('/device/:deviceid/category/:category/count', authoriseUser, function(req, res) {
+    dataController.countByCategory(req, res);
+})
 
 
 
