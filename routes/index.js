@@ -62,17 +62,18 @@ router.get('/device/:deviceid/sensors', authoriseUser, function(req, res) {
     dataController.getSensors(req, res);
 })
 
-router.get('/device/:deviceid/sensor/:sensorid', authoriseUser, function(req, res) {
-    dataController.getSensor(req, res);
+router.get('/device/:deviceid/:type/:thingid', function(req, res) {
+    dataController.getThing(req, res);
 })
 
-router.get('/device/:deviceid/light/:lightid', function(req, res) {
-    dataController.getLight(req, res);
+// router.post('/device/:deviceid/light/:lightid/state/:lightstate', authoriseUser, function(req, res) {
+//     dataController.setLight(req, res);
+// })
+
+router.post('/device/:deviceid/thing/:thingid/state/:thingstate', authoriseUser, function(req, res) {
+    dataController.setThing(req, res);
 })
 
-router.post('/device/:deviceid/light/:lightid/state/:lightstate', authoriseUser, function(req, res) {
-    dataController.setLight(req, res);
-})
 
 router.get('/device/:deviceid/top/:limit', authoriseUser, function(req, res) {
     dataController.getTop(req, res);

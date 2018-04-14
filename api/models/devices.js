@@ -15,7 +15,7 @@ module.exports = {
                     reject(err);
                 } else {
                     if (!results.length) {
-                        reject('Could not find any devices!');
+                        resolve("no results");
                     } else {
                         resolve(results);
                     }

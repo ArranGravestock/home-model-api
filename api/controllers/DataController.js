@@ -55,8 +55,14 @@ module.exports = {
     deviceNames: (req, res) => {
         deviceModel.getNames(req.session).then((results) => 
             {
-                res.status(201);
-                res.send(results);
+                if (results == "no results") {
+                    res.status(204);
+                    res.send(results);
+                } else {
+                    res.status(200);
+                    res.send(results);
+                }
+                
             }
         ).catch(
             function() {
@@ -128,34 +134,6 @@ module.exports = {
         )
     },
 
-    getSensor: (req, res) => {
-        sensorModel.getState(req.params.deviceid, req.params.sensorid).then(
-            function(results) {
-                res.status(200);
-                res.send(results);
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
-    },
-
-    getLight: (req, res) => {
-        lightModel.getState(req.params.deviceid, req.params.lightid).then(
-            function(results) {
-                res.status(200);
-                res.send(results);
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
-    },
-
     getTop: (req, res) => {
         logsModel.getTop(req.params.deviceid, req.params.limit).then(
             function(results) {
@@ -198,9 +176,8 @@ module.exports = {
         )
     },
 
-    setLight: (req, res) => {
-        var value = `(${req.params.deviceid}, ${req.params.lightid}, ${req.params.lightstate})`
-        console.log(value)
+    setThing: (req, res) => {
+        var value = `(${req.params.deviceid}, ${req.params.thingid}, ${req.params.thingstate})`
         logsModel.add(value).then(
             function() {
                 res.status(200);
@@ -258,6 +235,20 @@ module.exports = {
 
     countByCategory: (req, res) => {
         thingsModel.countByCategory(req.params.deviceid, req.params.category).then(
+            function(results) {
+                res.status(200);
+                res.send(results);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    getThing: (req, res) => {
+        thingsModel.getState(req.params.deviceid, req.params.thingid, req.params.type).then(
             function(results) {
                 res.status(200);
                 res.send(results);
