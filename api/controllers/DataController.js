@@ -119,20 +119,6 @@ module.exports = {
             res.send("test");
         }
     },
-    
-    lights: (req, res) => {
-        lightModel.returnAll(req.params.deviceid).then(
-            function(results) {
-                res.status(200);
-                res.send(results);
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
-    },
 
     getTop: (req, res) => {
         logsModel.getTop(req.params.deviceid, req.params.limit).then(
@@ -148,22 +134,8 @@ module.exports = {
         )
     },
 
-    getRemotes: (req, res) => {
-        remoteModel.returnAll(req.params.deviceid).then(
-            function(results) {
-                res.status(200);
-                res.send(results);
-            }
-        ).catch(
-            function() {
-                res.status(400);
-                res.send("failure");
-            }
-        )
-    },
-
-    getSensors: (req, res) => {
-        sensorModel.returnAll(req.params.deviceid).then(
+    getDeviceThings: (req, res) => {
+        logsModel.getAllByType(req.params.deviceid, req.params.type).then(
             function(results) {
                 res.status(200);
                 res.send(results);

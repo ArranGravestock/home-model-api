@@ -50,25 +50,13 @@ router.put('/reading', function(req, res) {
    dataController.deviceNames(req, res);
 })
 
-router.get('/device/:deviceid/lights', authoriseUser, function(req, res) {
-    dataController.lights(req, res);
+router.get('/device/:deviceid/type/:type', authoriseUser, function(req, res) {
+    dataController.getDeviceThings(req, res);
 })
 
-router.get('/device/:deviceid/remotes', authoriseUser, function(req, res) {
-    dataController.getRemotes(req, res);
-})
-
-router.get('/device/:deviceid/sensors', authoriseUser, function(req, res) {
-    dataController.getSensors(req, res);
-})
-
-router.get('/device/:deviceid/:type/:thingid', function(req, res) {
+router.get('/device/:deviceid/type/:type/:thingid', function(req, res) {
     dataController.getThing(req, res);
 })
-
-// router.post('/device/:deviceid/light/:lightid/state/:lightstate', authoriseUser, function(req, res) {
-//     dataController.setLight(req, res);
-// })
 
 router.post('/device/:deviceid/thing/:thingid/state/:thingstate', authoriseUser, function(req, res) {
     dataController.setThing(req, res);
