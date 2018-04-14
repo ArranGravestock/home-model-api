@@ -1,11 +1,8 @@
 'Use Strict';
 
 let deviceModel = require('../models/devices');
-let lightModel = require('../models/lights');
-let sensorModel = require('../models/sensors');
 let userModel = require('../models/users');
 let logsModel = require('../models/logs');
-let remoteModel = require('../models/remotes');
 let thingsModel = require('../models/things');
 
 module.exports = {
