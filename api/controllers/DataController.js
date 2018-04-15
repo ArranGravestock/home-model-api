@@ -85,35 +85,24 @@ module.exports = {
 
     reading: (req, res) => {
 
-        //compile values to be added to database in format (deviceid, thingid, thingstate)
-        var values = "";
         if (req.body) {
-
-            //generate value string to reduce number of queries
+            //insert every value into db
             for (var i = 0; i < req.body.THINGS.length; i++) {
-                if (i != req.body.THINGS.length-1) {
-                    values += `(${req.body.DEVICE_ID}, ${req.body.THINGS[i].id}, ${req.body.THINGS[i].state}),`
-                } else {
-                    values += `(${req.body.DEVICE_ID}, ${req.body.THINGS[i].id}, ${req.body.THINGS[i].state})`
-                }
+                var value = {DeviceID: parseInt(req.body.DEVICE_ID), ThingID: parseInt(req.body.THINGS[i].id), ThingState: req.body.THINGS[i].state}
+                logsModel.add(value)
+                .catch(
+                    () => {
+                        //not sure how this responds if it breaks when one value is wrong
+                        res.status(400);
+                        res.send(failure);
+                    }
+                )
             }
-
-            //query the database with the values
-            logsModel.add(values).then( 
-                function() {
-                    res.status(200);
-                    res.send("success");
-                }
-            ).catch(
-                function() {
-                    res.status(400);
-                    res.send(failure);
-                }
-            )
-            
+            res.status(200);
+            res.send("success");
         } else {
             res.status(400);
-            res.send("test");
+            res.send("fail");
         }
     },
 
@@ -146,7 +135,15 @@ module.exports = {
     },
 
     setThing: (req, res) => {
-        var value = `(${req.params.deviceid}, ${req.params.thingid}, ${req.params.thingstate})`
+        var state = req.params.thingstate;
+
+        if (req.params.thingstate == "true") {
+            state = 1;
+        } else {
+            state = 0;
+        }
+        var value = {DeviceID: parseInt(req.params.deviceid), ThingID: parseInt(req.params.thingid), ThingState: state}
+
         logsModel.add(value).then(
             function() {
                 res.status(200);

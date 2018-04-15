@@ -30,6 +30,8 @@ router.post('/logout', function(req, res) {
     req.session.destroy(function (err) {
         if (err) {
             console.log(err);
+        } else {
+            console.log("user logged out");
         }
     })
 })
@@ -37,7 +39,6 @@ router.post('/logout', function(req, res) {
 router.post('/registerdevice/:token', authoriseUser, function(req, res) {
     dataController.registerDevice(req, res);
 })
-
 
 //server reading - adds all data to logs
 router.put('/reading', function(req, res) {
@@ -61,7 +62,6 @@ router.get('/device/:deviceid/type/:type/:thingid', function(req, res) {
 router.post('/device/:deviceid/thing/:thingid/state/:thingstate', authoriseUser, function(req, res) {
     dataController.setThing(req, res);
 })
-
 
 router.get('/device/:deviceid/top/:limit', authoriseUser, function(req, res) {
     dataController.getTop(req, res);

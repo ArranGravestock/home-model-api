@@ -19,7 +19,10 @@ var app = express();
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3001',
+  credentials: true,
+}));
 app.use(cookieParser());
 app.use(session({
   secret: "dhu92h1890uh9d21h9",
