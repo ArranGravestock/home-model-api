@@ -76,9 +76,9 @@ module.exports = {
                 res.send("success");
             }
         ).catch(
-            function() {
+            function(result) {
                 res.status(400);
-                res.send("failure");
+                res.send(result);
             }
         )
     },

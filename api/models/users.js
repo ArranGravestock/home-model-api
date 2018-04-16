@@ -51,8 +51,7 @@ module.exports = {
             VALUES (?, ?)`, [req.session.userid, req.params.token],
                 function(err) {
                     if (err) {
-                        console.log(err);
-                        reject(err);
+                        reject(err.code)
                     } else {
                         resolve(true);
                     }
