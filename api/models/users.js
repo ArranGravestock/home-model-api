@@ -27,6 +27,21 @@ module.exports = {
         })
     },
 
+    removeAccess: (userid, deviceid) => {
+        return new Promise((resolve, reject) => {
+            connection.query(`DELETE FROM UserDevices WHERE UserID = ?
+            AND DeviceID = ?`, [userid, deviceid],
+            function(err, results) {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            })
+        })
+    },
+
     validateLogin: (data) => {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT Users.UserName, Users.UserID FROM Users

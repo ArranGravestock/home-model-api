@@ -83,6 +83,20 @@ module.exports = {
         )
     },
 
+    userRemoveAccess: (req, res) => {
+        userModel.removeAccess(req.session.userid, req.params.deviceid).then(
+            function() {
+                res.status(200);
+                res.send("success");
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
     reading: (req, res) => {
 
         if (req.body) {

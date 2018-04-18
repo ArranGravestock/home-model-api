@@ -83,7 +83,9 @@ router.get('/device/:deviceid/category/:category/count', authoriseUser, function
     dataController.countByCategory(req, res);
 })
 
-
+router.delete('/removedevice/:deviceid', authoriseUser, function(req, res) {
+    dataController.userRemoveAccess(req, res);
+})
 
 
 module.exports = router;
