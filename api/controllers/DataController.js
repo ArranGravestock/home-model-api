@@ -97,6 +97,64 @@ module.exports = {
         )
     },
 
+    //averages
+    averageStateByDate: (req, res) => {
+        logsModel.getAverageForDate(req.params.deviceid, req.params.thingid, req.params.date).then(
+            function(result) {
+                res.status(200);
+                res.send(result);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    averageOverDays: (req, res) => {
+        logsModel.getAverageOverDays(req.params.deviceid, req.params.thingid, req.params.days).then(
+            function(result) {
+                res.status(200);
+                res.send(result);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    averageForLastDays: (req, res) => {
+        logsModel.getAverageForLastDays(req.params.deviceid, req.params.thingid, req.params.days).then(
+            function(result) {
+                res.status(200);
+                res.send(result);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    averageForLastHours: (req, res) => {
+        logsModel.getAverageForLastHours(req.params.deviceid, req.params.thingid, req.params.hours).then(
+            function(result) {
+                res.status(200);
+                res.send(result);
+            }
+        ).catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+    //
+
     reading: (req, res) => {
 
         if (req.body) {

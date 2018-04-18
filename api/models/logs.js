@@ -155,5 +155,79 @@ module.exports = {
                 }
             )
         })
-    }
+    },
+
+    getAverageForDate: (deviceid, thingid, date) => {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                `SELECT AVG(ThingState) AS average FROM Logs
+                WHERE DATE(CreatedAt) = ?
+                AND DeviceID = ?
+                AND ThingID = ?`, [date, deviceid, thingid],
+                function(err, results) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            )
+        })
+    },
+
+    getAverageOverDays: (deviceid, thingid, days) => {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                `SELECT DeviceID, ThingID, ROUND(AVG(ThingState)) AS average FROM Logs
+                WHERE DATE(CreatedAt) BETWEEN DATE_SUB(DATE(NOW()), INTERVAL ? DAY) AND DATE(NOW())
+                AND DeviceID = ?
+                AND ThingID = ?`, [days, deviceid, thingid],
+                function(err, results) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            )
+        })
+    },
+
+    getAverageForLastDays: (deviceid, thingid, days) => {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                `SELECT DATE(CreatedAt) as dates, ROUND(AVG(ThingState)) AS average FROM Logs
+                WHERE DATE(CreatedAt) BETWEEN DATE_SUB(DATE(NOW()), INTERVAL ? DAY) AND DATE(NOW())
+                AND DeviceID = ?
+                AND ThingID = ?
+                GROUP BY DATE(CreatedAt)`, [days, deviceid, thingid],
+                function(err, results) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            )
+        })
+    },
+
+    getAverageForLastHours: (deviceid, thingid, hours) => {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                `SELECT DATE(CreatedAt) as dates, HOUR(CreatedAt) as hours, ROUND(AVG(ThingState)) AS average FROM Logs
+                WHERE DATE(CreatedAt) BETWEEN DATE(DATE_SUB(NOW(), INTERVAL ? HOUR)) AND DATE(NOW())
+                AND DeviceID = ?
+                AND ThingID = ?
+                GROUP BY DATE(CreatedAt), HOUR(CreatedAt)`, [hours, deviceid, thingid],
+                function(err, results) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            )
+        })
+    },
 }

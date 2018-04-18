@@ -40,11 +40,14 @@ router.post('/registerdevice/:token', authoriseUser, function(req, res) {
     dataController.registerDevice(req, res);
 })
 
+router.post('/device/:deviceid/thing/:thingid/state/:thingstate', authoriseUser, function(req, res) {
+    dataController.setThing(req, res);
+})
+
 //server reading - adds all data to logs
 router.put('/reading', function(req, res) {
     dataController.reading(req, res);
 })
-
 
 //retrieve
  router.get('/devices', authoriseUser, function(req, res) {
@@ -57,10 +60,6 @@ router.get('/device/:deviceid/type/:type', authoriseUser, function(req, res) {
 
 router.get('/device/:deviceid/type/:type/:thingid', function(req, res) {
     dataController.getThing(req, res);
-})
-
-router.post('/device/:deviceid/thing/:thingid/state/:thingstate', authoriseUser, function(req, res) {
-    dataController.setThing(req, res);
 })
 
 router.get('/device/:deviceid/top/:limit', authoriseUser, function(req, res) {
@@ -83,6 +82,24 @@ router.get('/device/:deviceid/category/:category/count', authoriseUser, function
     dataController.countByCategory(req, res);
 })
 
+//averages of states
+router.get('/averagebydate/device/:deviceid/thing/:thingid/date/:date',  function(req,res) {
+    dataController.averageStateByDate(req, res);
+})
+
+router.get('/averageoverdays/device/:deviceid/thing/:thingid/days/:days',  function(req,res) {
+    dataController.averageOverDays(req, res);
+})
+
+router.get('/averageforlastdays/device/:deviceid/thing/:thingid/days/:days',  function(req,res) {
+    dataController.averageForLastDays(req, res);
+})
+
+router.get('/averageforlasthours/device/:deviceid/thing/:thingid/hours/:hours',function(req,res) {
+    dataController.averageForLastHours(req, res);
+})
+
+//removals
 router.delete('/removedevice/:deviceid', authoriseUser, function(req, res) {
     dataController.userRemoveAccess(req, res);
 })
