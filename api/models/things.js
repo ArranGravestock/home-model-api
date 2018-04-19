@@ -30,9 +30,12 @@ module.exports = {
             AND Things.ThingType = ?`, [deviceid, thingid, type],
             function(err, results) {
                 if (err) {
+                    console.log(err);
+                    console.log("ERROR");
                     reject(err)
                 } else {
                     if(!results.length) {
+                        console.log("ERROR2");
                         reject("no results found");
                     } else {
                         resolve(results);

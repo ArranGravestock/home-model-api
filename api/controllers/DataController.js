@@ -160,7 +160,7 @@ module.exports = {
         if (req.body) {
             //insert every value into db
             for (var i = 0; i < req.body.THINGS.length; i++) {
-                var value = {DeviceID: parseInt(req.body.DEVICE_ID), ThingID: parseInt(req.body.THINGS[i].id), ThingState: req.body.THINGS[i].state}
+                var value = {DeviceID: req.body.DEVICE_ID, ThingID: Number(req.body.THINGS[i].id), ThingState: req.body.THINGS[i].state}
                 logsModel.add(value)
                 .catch(
                     () => {
@@ -214,7 +214,7 @@ module.exports = {
         } else {
             state = 0;
         }
-        var value = {DeviceID: parseInt(req.params.deviceid), ThingID: parseInt(req.params.thingid), ThingState: state}
+        var value = {DeviceID: req.params.deviceid, ThingID: Number(req.params.thingid), ThingState: state}
 
         logsModel.add(value).then(
             function() {
