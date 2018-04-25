@@ -48,10 +48,6 @@ module.exports = {
 
     validateLogin: (data) => {
         return new Promise((resolve, reject) => {
-
-
-            
-
             connection.query(`SELECT Users.UserName, Users.UserID, Users.Password FROM Users
             WHERE Users.UserName = ?`, [data.username],
             function(err, results) {
