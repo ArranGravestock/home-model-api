@@ -7,8 +7,6 @@ var database = require('./database');
 var connection = database.Connect();
 
 module.exports = {
-    //hashedPass = hashPass("test"); //causes error undefined ???
-        //console.log(hashedPass); //undefined??????
     create: (data) => {
         return new Promise((resolve, reject) => {
             if(data.username && data.password && data.email) {
@@ -82,15 +80,3 @@ module.exports = {
         })
     }
 }
-
-/*
-hashPass = (password) => {
-    crypto.pbkdf2('secret', 'salt', 100000, 512, 'sha512', (err, derviedKey) => {
-        if (err) throw err;
-       
-        let hashedpass = derviedKey.toString('hex');
-        console.log(hashedpass);
-        return hashedpass;
-    })
-}
-*/
