@@ -1,6 +1,7 @@
 'Use Strict';
 
-var crypto = require('crypto');
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 var database = require('./database');
 var connection = database.Connect();
@@ -11,8 +12,10 @@ module.exports = {
     create: (data) => {
         return new Promise((resolve, reject) => {
             if(data.username && data.password && data.email) {
+                var hash = bcrypt.hashSync(data.password, saltRounds);
+
                 connection.query(`INSERT INTO Users (UserName, Password, Email)
-                VALUES (?, ?, ?)`, [data.username, data.password, data.email],
+                VALUES (?, ?, ?)`, [data.username, hash, data.email],
                 function(err, results) {
                     if (err) {
                         console.log(err);
@@ -21,6 +24,7 @@ module.exports = {
                         resolve(results.insertId);
                     }
                 })
+
             } else {
                 reject(false);
             }
@@ -44,16 +48,23 @@ module.exports = {
 
     validateLogin: (data) => {
         return new Promise((resolve, reject) => {
-            connection.query(`SELECT Users.UserName, Users.UserID FROM Users
-            WHERE Users.UserName = ? AND Users.Password = ?`, [data.username, data.password],
+
+
+            
+
+            connection.query(`SELECT Users.UserName, Users.UserID, Users.Password FROM Users
+            WHERE Users.UserName = ?`, [data.username],
             function(err, results) {
                 if (err) {
                     reject(err);
                 } else {
-                    if (!results.length) {
-                        reject(false);
+                    var match = bcrypt.compareSync(data.password, results[0].Password);
+
+                    if (match) {
+                        var res = [{UserName: results[0].UserName, UserID: results[0].UserID}]
+                        resolve(res);
                     } else {
-                        resolve(results);
+                        reject(false);
                     }
                 }
             })
