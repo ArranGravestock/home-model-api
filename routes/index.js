@@ -5,9 +5,10 @@ var router = express.Router();
 
 var dataController = require('../api/controllers/DataController');
 var database = require('../api/models/database');
+var userModel = require('../api/models/users');
 
 //functions middleware
-function authoriseUser(req, res, next){
+function authoriseUser(req, res, next) {
     console.log(`Query attempt by session... ${req.session.user}:${req.session.userid}`)
     if(req.session.user && req.session.userid){
         next();
@@ -15,7 +16,15 @@ function authoriseUser(req, res, next){
        var err = new Error("Not logged in!");
        next(err);
     }
- }
+}
+
+router.get('/registeredusers/device/:deviceid', authoriseUser, function(req, res) {
+    dataController.retrieveUsers(req, res);
+})
+
+router.post('/checkadmin/device/:deviceid', authoriseUser, function(req, res) {
+    dataController.validateAdmin(req, res);
+})
 
 //create
 router.post('/signup', function(req, res) {

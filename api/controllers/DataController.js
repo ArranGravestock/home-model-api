@@ -298,4 +298,47 @@ module.exports = {
             }
         )
     },
+
+    validateAdmin: (req, res) => {
+        userModel.validateAdmin(req.session.userid, req.params.deviceid)
+        .then(
+            function(results) {
+                res.status(200);
+                res.send(results);
+            }
+        )
+        .catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
+
+    retrieveUsers: (req, res) => {
+        userModel.validateAdmin(req.session.userid, req.params.deviceid)
+        .then(
+            function() {
+                userModel.retrieveAuths(req.params.deviceid)
+                .then(
+                    function(results) {
+                        res.status(200);
+                        res.send(results);
+                    }
+                )
+                .catch(
+                    function() {
+                        res.status(400);
+                        res.send("failure");
+                    }
+                )
+            }
+        )
+        .catch(
+            function() {
+                res.status(400);
+                res.send("failure");
+            }
+        )
+    },
 }

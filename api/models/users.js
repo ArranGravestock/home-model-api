@@ -59,6 +59,49 @@ module.exports = {
             })
         })
     },
+
+    validateAdmin: (userid, deviceid) => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT UserDevices.Admin FROM UserDevices
+            WHERE UserDevices.UserID = ? AND UserDevices.DeviceID = ?`, [userid, deviceid],
+            function(err, results) {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (!results.length) {
+                        reject(false);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            })
+        })
+    },
+
+    retrieveAuths: (deviceid) => {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT 
+            Users.UserName, UserDevices.Admin
+        FROM
+            UserDevices
+                INNER JOIN
+            Users ON Users.UserID = UserDevices.UserID
+        WHERE
+            DeviceID = ?
+                AND Admin = 0`, [deviceid],
+            function(err, results) {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (!results.length) {
+                        reject(false);
+                    } else {
+                        resolve(results);
+                    }
+                }
+            })
+        })
+    },
     
     registerDevice: (req) => {
         return new Promise((resolve, reject) => {
