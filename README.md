@@ -2,6 +2,17 @@
 A RESTful designed API which stores data supplied by either a web client or electronic prototyping platform (e.g. arduino or raspberry pi) through HTTP protocols using express-js.
 
 ## Installation for development
+
+requires node version 4.9.1!!
+```
+nvm use 4.9.1
+```
+
+or 
+```
+n 4.9.1
+```
+
 Install dependencies:
 ```
 npm install
